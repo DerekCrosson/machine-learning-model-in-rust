@@ -2,10 +2,29 @@ use csv::Reader;
 use linfa::Dataset;
 use ndarray::{Array, Array1, Array2};
 use std::fs::File;
+use linfa_trees::DecisionTree;
+use linfa::prelude::*;
 
 fn main() {
     let dataset = get_dataset();
+    println!("==================== Dataset ====================");
     println!("{:?}", dataset);
+    println!("=================================================");
+
+    let (train, test) = linfa_datasets::iris()
+        .split_with_ratio(0.9);
+
+    let model = DecisionTree::params()
+        .fit(&train).unwrap();
+    
+    let predictions = model.predict(&test);
+    
+    println!("================== Predictions ==================");
+    println!("{:?}", predictions);
+    println!("=================================================");
+    println!("==================== Actual =====================");
+    println!("{:?}", test.targets);
+    println!("=================================================");
 }
 
 fn get_dataset() -> Dataset<f32, i32, ndarray::Dim<[usize; 1]>> {
